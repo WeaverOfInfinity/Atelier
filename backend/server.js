@@ -2,8 +2,9 @@ const express = require('express');
 const dbConnect = require('./src/config/dbConfig').dbConnect;
 const dotenv = require('dotenv');
 const app = express();
+const productRouter = require('./src/routes/productRouter');
 
-// app.use('/auth', require('./src/routes/authRouter'));
+app.use('/products', productRouter);
 
 
 if (require.main === module) {
