@@ -4,8 +4,22 @@ const mongoose = require('mongoose');
 module.exports = {
     getAllProducts: async (req, res) => {
         try {
-            const products = await Product.find();
-            res.status(200).json(products);
+            const page = parseInt(req.query.page) || 1; // Default to page 1
+            const limit = 20; // Fixed limit of 20 products per page
+            const skip = (page - 1) * limit; // Calculate offset
+    
+            const products = await Product.find().skip(skip).limit(limit);
+            const totalProducts = await Product.countDocuments();
+            const totalPages = Math.ceil(totalProducts / limit);
+    
+            res.status(200).json({
+                products,
+                page,
+                limit,
+                totalProducts,
+                totalPages,
+            });
+
         } catch (error) {
             res.status(500).json({ message: 'Error fetching products', error });
         }
