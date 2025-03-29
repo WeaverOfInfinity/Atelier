@@ -54,4 +54,15 @@ describe('Product API', () => {
         expect(response.body[0].name).toBe('Product 1');
         expect(response.body[1].name).toBe('Product 2');
     });
+
+    test('GET /products/category/:category - should redirect if no category is provided', async () => {
+        const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
+        const product2 = new Product({ name: 'Product 2', description: 'Description 2', price: 200, category: 'Category 1' });
+        await product1.save();
+        await product2.save();
+        
+        const response = await request(app).get('/products/category/');
+        expect(response.statusCode).toBe(302); // Check for redirect status code
+        expect(response.headers.location).toBe('/products'); // Check redirect location
+    });
 });
