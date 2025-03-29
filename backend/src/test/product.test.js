@@ -2,6 +2,7 @@ const { connectDB, closeDB, clearDB } = require('../utils/testHandler');
 const request = require('supertest');
 const app = require('../../server');
 const Product = require('../models/Product');
+const { faker } = require('@faker-js/faker');
 
 beforeAll(async () => {
     await connectDB();
@@ -26,10 +27,52 @@ describe('Product API', () => {
         const response = await request(app).get('/products');
 
         expect(response.statusCode).toBe(200);
-        expect(response.body.length).toBe(2);
-        expect(response.body[0].name).toBe('Product 1');
-        expect(response.body[1].name).toBe('Product 2');
+        expect(response.body.products.length).toBe(2);
+        expect(response.body.products[0].name).toBe('Product 1');
+        expect(response.body.products[1].name).toBe('Product 2');
     });
+
+
+    test('GET /products - should support pagination', async () => {
+        // Create 25 test products using a for loop and Faker
+        const totalProducts = 25;
+        for (let i = 0; i < totalProducts; i++) {
+            const product = new Product({
+                name: faker.commerce.productName(),
+                description: faker.commerce.productDescription(),
+                price: faker.commerce.price(),
+                category: faker.commerce.department()
+            });
+            await product.save();
+        }
+        
+        // Test first page (default)
+        const response1 = await request(app).get('/products');
+        console.log('Response body:', response1.body);
+
+        expect(response1.statusCode).toBe(200);
+        expect(response1.body.products.length).toBe(20); // Assuming 20 per page
+        expect(response1.body.page).toBe(1);
+        expect(response1.body.totalPages).toBe(2);
+        expect(response1.body.totalProducts).toBe(totalProducts);
+        
+        // Test second page explicitly
+        const response2 = await request(app).get('/products?page=2');
+        expect(response2.statusCode).toBe(200);
+        expect(response2.body.products.length).toBe(5); // 25 total, 20 on first page, 5 on second
+        expect(response2.body.page).toBe(2);
+        expect(response2.body.totalPages).toBe(2);
+        expect(response2.body.totalProducts).toBe(totalProducts);
+        
+        // Check that the products on page 2 are different from page 1
+        const page1Ids = response1.body.products.map(p => p._id);
+        const page2Ids = response2.body.products.map(p => p._id);
+        
+        // Ensure no overlap between pages
+        const overlap = page1Ids.filter(id => page2Ids.includes(id));
+        expect(overlap.length).toBe(0);
+    });
+
 
     test('GET /products/:id - should return a single product', async () => {
         const product = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
@@ -40,6 +83,7 @@ describe('Product API', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body.name).toBe('Product 1');
     });
+
 
     test('GET /products/category/:category - should return products by category', async () => {
         const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
@@ -54,6 +98,7 @@ describe('Product API', () => {
         expect(response.body[0].name).toBe('Product 1');
         expect(response.body[1].name).toBe('Product 2');
     });
+
 
     test('GET /products/category/:category - should redirect if no category is provided', async () => {
         const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
