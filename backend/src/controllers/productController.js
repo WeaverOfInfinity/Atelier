@@ -25,5 +25,21 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ message: 'Error fetching product', error });
         }
-    }
+    },
+
+    getProductsByCategory: async (req, res) => {
+        const { category } = req.params;
+        if (!category) {
+           return res.redirect('/products');
+        }
+        try {
+            const products = await Product.$where(`this.category == "${category}"`);
+            if (products.length === 0) {
+                return res.status(404).json({ message: 'No products found in this category' });
+            }
+            res.status(200).json(products);
+        } catch (error) {
+            res.status(500).json({ message: 'Error fetching products by category', error });
+        }
+    },
 }
