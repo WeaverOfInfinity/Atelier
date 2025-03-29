@@ -48,7 +48,6 @@ describe('Product API', () => {
         
         // Test first page (default)
         const response1 = await request(app).get('/products');
-        console.log('Response body:', response1.body);
 
         expect(response1.statusCode).toBe(200);
         expect(response1.body.products.length).toBe(20); // Assuming 20 per page
@@ -109,5 +108,21 @@ describe('Product API', () => {
         const response = await request(app).get('/products/category/');
         expect(response.statusCode).toBe(302); // Check for redirect status code
         expect(response.headers.location).toBe('/products'); // Check redirect location
+    });
+
+
+    test('GET /products/search - should return products based on search criteria', async () => {
+        const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
+        const product2 = new Product({ name: 'Product 2', description: 'Description 2', price: 200, category: 'Category 2' });
+        await product1.save();
+        await product2.save();
+
+        const response = await request(app).get('/products/search')
+                .query({ name: 'Product', category: 'Category 1', minPrice: 50, maxPrice: 150 });
+        console.log('Response body:', response.body);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.length).toBe(1);
+        expect(response.body[0].name).toBe('Product 1');
     });
 });
