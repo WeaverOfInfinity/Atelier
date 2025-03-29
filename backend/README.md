@@ -128,3 +128,34 @@
 
 - **Note**: If no category is specified (e.g., `/api/products/category/`), the request will redirect to `/api/products`, which returns all products.
 
+#### 4. GET /api/products/search
+- **Description**: Search for products based on various criteria.
+- **Request**:
+  - Query Parameters (all optional):
+    - `name` (string): Search for products with names matching this value (case-insensitive).
+    - `category` (string): Search for products in a specific category (case-insensitive).
+    - `minPrice` (number): Minimum price of the products.
+    - `maxPrice` (number): Maximum price of the products.
+  - **Example Request**:
+    ```
+    GET /api/products/search?name=Product&category=Category A&minPrice=50&maxPrice=150
+    ```
+- **Response**:
+  - Status: `200 OK`
+  - Body: JSON array of product objects matching the search criteria.
+  - **Example Response**:
+    ```json
+    [
+      {
+        "_id": "64f1b2c3d4e5f67890123456",
+        "name": "Product A",
+        "description": "Description of Product A",
+        "price": 100,
+        "category": "Category A",
+        "createdAt": "2023-10-01T12:00:00.000Z",
+        "updatedAt": "2023-10-01T12:00:00.000Z"
+      }
+    ]
+    ```
+  - Status: `500 Internal Server Error` if an error occurs.
+
