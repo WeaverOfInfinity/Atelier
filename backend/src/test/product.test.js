@@ -40,4 +40,18 @@ describe('Product API', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body.name).toBe('Product 1');
     });
+
+    test('GET /products/category/:category - should return products by category', async () => {
+        const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
+        const product2 = new Product({ name: 'Product 2', description: 'Description 2', price: 200, category: 'Category 1' });
+        await product1.save();
+        await product2.save();
+
+        const response = await request(app).get('/products/category/Category 1');
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.length).toBe(2);
+        expect(response.body[0].name).toBe('Product 1');
+        expect(response.body[1].name).toBe('Product 2');
+    });
 });
