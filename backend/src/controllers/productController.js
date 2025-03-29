@@ -53,4 +53,29 @@ module.exports = {
             res.status(500).json({ message: 'Error fetching products by category', error });
         }
     },
+
+    searchProducts: async (req, res) => {
+        const { name, category, minPrice, maxPrice } = req.query;
+        const query = {};
+        
+        // Name filter (case-insensitive partial match)
+        if (name) query.name = { $regex: name, $options: 'i' };
+        
+        // Category filter
+        if (category) query.category = { $regex: category, $options: 'i' };
+        
+        // Price range filter
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice) || 0;
+            if (maxPrice) query.price.$lte = Number(maxPrice) || Infinity;
+        }
+        
+        try {
+            const products = await Product.find(query);
+            res.status(200).json(products);
+        } catch (error) {
+            res.status(500).json({ message: 'Error searching products', error });
+        }
+    }
 }
