@@ -1,9 +1,10 @@
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 
+let mongoServer;
 
 const connectDB = async () => {
-    const mongoServer = await MongoMemoryServer.create();
+    mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
     await mongoose.connect(uri, {
         useNewUrlParser: true,
@@ -16,6 +17,8 @@ const closeDB = async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
     console.log('MongoDB connection closed');
+    await mongoServer.stop() // stop the memory server to allow Jest to exit
+    console.log('MongoDB memory server stopped');
 }
 
 const clearDB = async () => {
