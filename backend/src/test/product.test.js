@@ -30,4 +30,14 @@ describe('Product API', () => {
         expect(response.body[0].name).toBe('Product 1');
         expect(response.body[1].name).toBe('Product 2');
     });
+
+    test('GET /products/:id - should return a single product', async () => {
+        const product = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
+        await product.save();
+
+        const response = await request(app).get(`/products/${product._id}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.name).toBe('Product 1');
+    });
 });
