@@ -29,9 +29,6 @@ module.exports = {
 
     getProductsByCategory: async (req, res) => {
         const { category } = req.params;
-        if (!category) {
-           return res.redirect('/products');
-        }
         try {
             const products = await Product.$where(`this.category == "${category}"`);
             if (products.length === 0) {
