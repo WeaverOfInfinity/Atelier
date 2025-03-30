@@ -12,7 +12,7 @@ module.exports = {
             const totalProducts = await Product.countDocuments();
             const totalPages = Math.ceil(totalProducts / limit);
     
-            res.status(200).json({
+           return res.status(200).json({
                 products,
                 page,
                 limit,
@@ -21,7 +21,7 @@ module.exports = {
             });
 
         } catch (error) {
-            res.status(500).json({ message: 'Error fetching products', error });
+            return res.status(500).json({ message: 'Error fetching products', error });
         }
     },
 
@@ -35,9 +35,9 @@ module.exports = {
             if (!product) {
                 return res.status(404).json({ message: 'Product not found' });
             }
-            res.status(200).json(product);
+            return res.status(200).json(product);
         } catch (error) {
-            res.status(500).json({ message: 'Error fetching product', error });
+            return res.status(500).json({ message: 'Error fetching product', error });
         }
     },
 
@@ -48,9 +48,9 @@ module.exports = {
             if (products.length === 0) {
                 return res.status(404).json({ message: 'No products found in this category' });
             }
-            res.status(200).json(products);
+           return res.status(200).json(products);
         } catch (error) {
-            res.status(500).json({ message: 'Error fetching products by category', error });
+            return res.status(500).json({ message: 'Error fetching products by category', error });
         }
     },
 
@@ -73,24 +73,24 @@ module.exports = {
         
         try {
             const products = await Product.find(query);
-            res.status(200).json(products);
+            return res.status(200).json(products);
         } catch (error) {
-            res.status(500).json({ message: 'Error searching products', error });
+           return res.status(500).json({ message: 'Error searching products', error });
         }
     },
 
     createProduct: async (req, res) => {
         const { name, description, price, category } = req.body;
-        if (!name) res.status(400).json({ message: 'Name is required' });
-        if (!price) res.status(400).json({ message: 'Price is required' });
-        if (!category) res.status(400).json({ message: 'Category is required' });
+        if (!name)return res.status(400).json({ message: 'Name is required' });
+        if (!price) return res.status(400).json({ message: 'Price is required' });
+        if (!category) return res.status(400).json({ message: 'Category is required' });
         
         try {
             const newProduct = new Product({ name, description, price, category });
             await newProduct.save();
-            res.status(201).json(newProduct);
+            return res.status(201).json(newProduct);
         } catch (error) {
-            res.status(500).json({ message: 'Error creating product', error });
+            return res.status(500).json({ message: 'Error creating product', error });
         }
     },
 }
