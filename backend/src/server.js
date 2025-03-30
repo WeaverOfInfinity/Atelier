@@ -4,6 +4,12 @@ const dotenv = require('dotenv');
 const app = express();
 const productRouter = require('./routes/productRouter');
 
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: false, // If sending cookies or auth headers
+}));
+
 app.use(express.json());
 app.use('/products', productRouter);
 
