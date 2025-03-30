@@ -93,4 +93,73 @@ module.exports = {
             return res.status(500).json({ message: 'Error creating product', error });
         }
     },
+
+    updateProduct: async (req, res) => {
+        const { id } = req.params;
+        const { name, description, price, category } = req.body;
+        
+        // Validate ID format
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid product ID' });
+        }
+        
+        // Build update object with only the fields that are provided
+        const update = {};
+        if (name !== undefined) update.name = name;
+        if (description !== undefined) update.description = description;
+        if (price !== undefined) update.price = price;
+        if (category !== undefined) update.category = category;
+        
+        // Check if there's anything to update
+        if (Object.keys(update).length === 0) {
+            return res.status(400).json({ message: 'At least one field is required to update' });
+        }
+        
+        // Additional schema-based validation for required fields
+        // Only validate if the field is being updated and is required by schema
+        if (update.name === '') {
+            return res.status(400).json({ message: 'Name cannot be empty' });
+        }
+        
+        if (update.price !== undefined && (isNaN(update.price) || update.price <= 0)) {
+            return res.status(400).json({ message: 'Price must be a positive number' });
+        }
+        
+        if (update.category === '') {
+            return res.status(400).json({ message: 'Category cannot be empty' });
+        }
+        
+        try {
+            const updatedProduct = await Product.findByIdAndUpdate(
+                id, 
+                update,
+                { new: true, runValidators: true }
+            );
+            
+            if (!updatedProduct) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+            
+            return res.status(200).json(updatedProduct);
+        } catch (error) {
+            // Handle specific Mongoose validation errors
+            if (error.name === 'ValidationError') {
+                const validationErrors = {};
+                
+                for (const field in error.errors) {
+                    validationErrors[field] = error.errors[field].message;
+                }
+                
+                return res.status(400).json({ 
+                    message: 'Validation error', 
+                    errors: validationErrors 
+                });
+            }
+            
+            return res.status(500).json({ 
+                message: 'Error updating product', 
+                error: error.message 
+            });
+        }
+    },
 }
