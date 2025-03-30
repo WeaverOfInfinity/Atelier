@@ -196,4 +196,38 @@ describe('Product API', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body.name).toBe('Updated Product');
     });
+
+
+    test('PUT /products/:id - should return 400 if required fields are invalid', async () => {
+        const product = new Product({
+            name: 'Product 1',
+            description: 'Description 1',
+            price: 45,
+            category: 'Category 1'
+        });
+
+        await product.save();
+
+        const updatedProduct = {
+            name: '', // Invalid name
+            description: 'Updated Description',
+            price: 45,
+            category: 'Updated Category'
+        };
+
+        const response = await request(app).put(`/products/${product._id}`).send(updatedProduct);
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Name cannot be empty');
+
+        // Test for invalid price
+        const updatedProduct2 = {
+            name: 'Updated Product',
+            description: 'Updated Description',
+            price: -10, // Invalid price
+            category: 'Updated Category'
+        };
+        const response2 = await request(app).put(`/products/${product._id}`).send(updatedProduct2);
+        expect(response2.statusCode).toBe(400);
+        expect(response2.body.message).toBe('Price must be a positive number');
+    });
 });
