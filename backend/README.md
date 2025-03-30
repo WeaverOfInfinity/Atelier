@@ -159,3 +159,44 @@
     ```
   - Status: `500 Internal Server Error` if an error occurs.
 
+#### 5. POST /api/products
+- **Description**: Create a new product.
+- **Request**:
+  - Body (JSON):
+    - `name` (string, required): The name of the product.
+    - `description` (string, optional): A description of the product.
+    - `price` (number, required): The price of the product.
+    - `category` (string, required): The category of the product.
+  - **Example Request**:
+    ```json
+    {
+      "name": "New Product",
+      "description": "New Description",
+      "price": 150,
+      "category": "New Category"
+    }
+    ```
+- **Response**:
+  - Status: `201 Created`
+  - Body: JSON object of the newly created product.
+  - **Example Response**:
+    ```json
+    {
+      "_id": "64f1b2c3d4e5f67890123458",
+      "name": "New Product",
+      "description": "New Description",
+      "price": 150,
+      "category": "New Category",
+      "createdAt": "2023-10-01T12:00:00.000Z",
+      "updatedAt": "2023-10-01T12:00:00.000Z"
+    }
+    ```
+  - Status: `400 Bad Request` if required fields are missing.
+    - **Example**:
+      ```json
+      {
+        "message": "Name is required"
+      }
+      ```
+  - Status: `500 Internal Server Error` if an error occurs.
+
