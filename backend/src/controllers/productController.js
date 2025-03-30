@@ -77,5 +77,20 @@ module.exports = {
         } catch (error) {
             res.status(500).json({ message: 'Error searching products', error });
         }
-    }
+    },
+
+    createProduct: async (req, res) => {
+        const { name, description, price, category } = req.body;
+        if (!name) res.status(400).json({ message: 'Name is required' });
+        if (!price) res.status(400).json({ message: 'Price is required' });
+        if (!category) res.status(400).json({ message: 'Category is required' });
+        
+        try {
+            const newProduct = new Product({ name, description, price, category });
+            await newProduct.save();
+            res.status(201).json(newProduct);
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating product', error });
+        }
+    },
 }
