@@ -119,7 +119,6 @@ describe('Product API', () => {
 
         const response = await request(app).get('/products/search')
                 .query({ name: 'Product', category: 'Category 1', minPrice: 50, maxPrice: 150 });
-        console.log('Response body:', response.body);
 
         expect(response.statusCode).toBe(200);
         expect(response.body.length).toBe(1);
@@ -134,7 +133,6 @@ describe('Product API', () => {
             price: 150,
             category: 'New Category'
         };
-
         const response = await request(app).post('/products').send(newProduct);
 
         expect(response.statusCode).toBe(201);
