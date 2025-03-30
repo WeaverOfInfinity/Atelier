@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +15,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongodb-memory-server": "^10.1.4",
-    "mongoose": "^8.13.1"
+    "mongoose": "^8.13.1",
+    "nodemon": "^3.1.9"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.6.0",
