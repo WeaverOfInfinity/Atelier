@@ -138,4 +138,39 @@ describe('Product API', () => {
         expect(response.statusCode).toBe(201);
         expect(response.body.name).toBe('New Product');
     });
+
+    test('POST /products - should return 400 if required fields are missing', async () => {
+        // Test for missing name field
+        const newProduct = {
+            description: 'New Description',
+            price: 150,
+            category: 'New Category'
+        };
+        const response = await request(app).post('/products').send(newProduct);
+
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Name is required');
+
+        // Test for missing price field
+        const newProduct2 = {
+            name: 'New Product',
+            description: 'New Description',
+            category: 'New Category'
+        };
+        const response2 = await request(app).post('/products').send(newProduct2);
+
+        expect(response2.statusCode).toBe(400);
+        expect(response2.body.message).toBe('Price is required');
+
+        // Test for missing category field
+        const newProduct3 = {
+            name: 'New Product',
+            description: 'New Description',
+            price: 150
+        };
+        const response3 = await request(app).post('/products').send(newProduct3);
+
+        expect(response3.statusCode).toBe(400);
+        expect(response3.body.message).toBe('Category is required');
+    });
 });
