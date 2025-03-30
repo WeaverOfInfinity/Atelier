@@ -259,3 +259,36 @@
       ```
   - Status: `500 Internal Server Error` if an error occurs.
 
+#### 7. DELETE /api/products/{id}
+- **Description**: Delete a product by its ID.
+- **Request**:
+  - Path Parameter: `id` (string, valid MongoDB ObjectId)
+  - **Example Request**:
+    ```
+    DELETE /api/products/64f1b2c3d4e5f67890123456
+    ```
+- **Response**:
+  - Status: `200 OK`
+  - Body: JSON object with a success message.
+  - **Example Response**:
+    ```json
+    {
+      "message": "Product deleted successfully"
+    }
+    ```
+  - Status: `400 Bad Request` if the ID is invalid.
+    - **Example**:
+      ```json
+      {
+        "message": "Invalid product ID"
+      }
+      ```
+  - Status: `404 Not Found` if the product does not exist.
+    - **Example**:
+      ```json
+      {
+        "message": "Product not found"
+      }
+      ```
+  - Status: `500 Internal Server Error` if an error occurs.
+
