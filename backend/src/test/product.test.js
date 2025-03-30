@@ -173,4 +173,27 @@ describe('Product API', () => {
         expect(response3.statusCode).toBe(400);
         expect(response3.body.message).toBe('Category is required');
     });
+
+
+    test('PUT /products/:id - should update an existing product', async () => {
+        const product = new Product({
+            name: 'Product 1',
+            description: 'Description 1',
+            price: 100,
+            category: 'Category 1'
+        });
+        await product.save();
+
+        const updatedProduct = {
+            name: 'Updated Product',
+            description: 'Updated Description',
+            price: 150,
+            category: 'Updated Category'
+        };
+       
+        const response = await request(app).put(`/products/${product._id}`).send(updatedProduct);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.name).toBe('Updated Product');
+    });
 });
