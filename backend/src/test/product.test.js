@@ -230,4 +230,20 @@ describe('Product API', () => {
         expect(response2.statusCode).toBe(400);
         expect(response2.body.message).toBe('Price must be a positive number');
     });
+
+
+    test('DELETE /products/:id - should delete a product', async () => {
+        const product = new Product({
+            name: 'Product 1',
+            description: 'Description 1',
+            price: 100,
+            category: 'Category 1'
+        });
+        await product.save();
+
+        const response = await request(app).delete(`/products/${product._id}`);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe('Product deleted successfully');
+    });
 });
