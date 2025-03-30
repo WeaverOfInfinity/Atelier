@@ -3,6 +3,7 @@ const dbConnect = require('./config/dbConfig').dbConnect;
 const dotenv = require('dotenv');
 const app = express();
 const productRouter = require('./routes/productRouter');
+const cors = require('cors');
 
 app.use(cors({
   origin: 'http://localhost:3000',
