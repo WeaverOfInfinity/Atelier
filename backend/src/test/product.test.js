@@ -1,6 +1,6 @@
 const { connectDB, closeDB, clearDB } = require('../utils/testHandler');
 const request = require('supertest');
-const app = require('../../server');
+const app = require('../server');
 const Product = require('../models/Product');
 const { faker } = require('@faker-js/faker');
 
@@ -124,5 +124,20 @@ describe('Product API', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body.length).toBe(1);
         expect(response.body[0].name).toBe('Product 1');
+    });
+
+
+    test('POST /products - should create a new product', async () => {
+        const newProduct = {
+            name: 'New Product',
+            description: 'New Description',
+            price: 150,
+            category: 'New Category'
+        };
+
+        const response = await request(app).post('/products').send(newProduct);
+
+        expect(response.statusCode).toBe(201);
+        expect(response.body.name).toBe('New Product');
     });
 });
