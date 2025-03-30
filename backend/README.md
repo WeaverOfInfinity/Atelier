@@ -200,3 +200,62 @@
       ```
   - Status: `500 Internal Server Error` if an error occurs.
 
+#### 6. PUT /api/products/{id}
+- **Description**: Update an existing product by its ID.
+- **Request**:
+  - Path Parameter: `id` (string, valid MongoDB ObjectId)
+  - Body (JSON):
+    - `name` (string, optional): The updated name of the product.
+    - `description` (string, optional): The updated description of the product.
+    - `price` (number, optional): The updated price of the product.
+    - `category` (string, optional): The updated category of the product.
+  - **Example Request**:
+    ```json
+    {
+      "name": "Updated Product",
+      "description": "Updated Description",
+      "price": 150,
+      "category": "Updated Category"
+    }
+    ```
+- **Response**:
+  - Status: `200 OK`
+  - Body: JSON object of the updated product.
+  - **Example Response**:
+    ```json
+    {
+      "_id": "64f1b2c3d4e5f67890123456",
+      "name": "Updated Product",
+      "description": "Updated Description",
+      "price": 150,
+      "category": "Updated Category",
+      "createdAt": "2023-10-01T12:00:00.000Z",
+      "updatedAt": "2023-10-02T12:00:00.000Z"
+    }
+    ```
+  - Status: `400 Bad Request` if the ID is invalid or required fields are invalid.
+    - **Example**:
+      ```json
+      {
+        "message": "Invalid product ID"
+      }
+      ```
+      ```json
+      {
+        "message": "Name cannot be empty"
+      }
+      ```
+      ```json
+      {
+        "message": "Price must be a positive number"
+      }
+      ```
+  - Status: `404 Not Found` if the product does not exist.
+    - **Example**:
+      ```json
+      {
+        "message": "Product not found"
+      }
+      ```
+  - Status: `500 Internal Server Error` if an error occurs.
+
