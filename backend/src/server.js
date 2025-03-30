@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const app = express();
 const productRouter = require('./routes/productRouter');
 
+app.use(express.json());
 app.use('/products', productRouter);
 
 
