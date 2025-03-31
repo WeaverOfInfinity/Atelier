@@ -83,6 +83,20 @@ describe('Product API', () => {
         expect(response.body.name).toBe('Product 1');
     });
 
+    test('GET /products/:id - should return 400 for invalid ID', async () => {
+        const invalidId = '12345'; // Invalid ID format
+        const response = await request(app).get(`/products/${invalidId}`);
+        expect(response.statusCode).toBe(400);
+        expect(response.body.message).toBe('Invalid product ID');
+    });
+
+    test('GET /products/:id - should return 404 for non-existent product', async () => {
+        const nonExistentId = '60d5f484f1c2b8b8c8e4e4e4';
+        const response = await request(app).get(`/products/${nonExistentId}`);
+        expect(response.statusCode).toBe(404);
+        expect(response.body.message).toBe('Product not found');
+    });
+
 
     test('GET /products/category/:category - should return products by category', async () => {
         const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
