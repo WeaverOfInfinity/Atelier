@@ -83,6 +83,7 @@ describe('Product API', () => {
         expect(response.body.name).toBe('Product 1');
     });
 
+    
     test('GET /products/:id - should return 400 for invalid ID', async () => {
         const invalidId = '12345'; // Invalid ID format
         const response = await request(app).get(`/products/${invalidId}`);
@@ -90,6 +91,7 @@ describe('Product API', () => {
         expect(response.body.message).toBe('Invalid product ID');
     });
 
+    
     test('GET /products/:id - should return 404 for non-existent product', async () => {
         const nonExistentId = '60d5f484f1c2b8b8c8e4e4e4';
         const response = await request(app).get(`/products/${nonExistentId}`);
@@ -122,6 +124,18 @@ describe('Product API', () => {
         const response = await request(app).get('/products/category/');
         expect(response.statusCode).toBe(302); // Check for redirect status code
         expect(response.headers.location).toBe('/products'); // Check redirect location
+    });
+
+    
+    test('GET /products/category/:category - should return 404 if no products found in category', async () => {
+        const product1 = new Product({ name: 'Product 1', description: 'Description 1', price: 100, category: 'Category 1' });
+        const product2 = new Product({ name: 'Product 2', description: 'Description 2', price: 200, category: 'Category 2' });
+        await product1.save();
+        await product2.save();
+
+        const response = await request(app).get('/products/category/NonExistentCategory');
+        expect(response.statusCode).toBe(404);
+        expect(response.body.message).toBe('No products found in this category');
     });
 
 
