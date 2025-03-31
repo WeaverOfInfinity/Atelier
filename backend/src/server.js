@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const app = express();
 const productRouter = require('./routes/productRouter');
 const cors = require('cors');
+const mongoSanitize = require('express-mongo-sanitize');
 
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -12,6 +13,9 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(mongoSanitize()); // Sanitize user input to prevent NoSQL injection attacks
+
 app.use('/products', productRouter);
 
 
