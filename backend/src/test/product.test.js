@@ -274,4 +274,12 @@ describe('Product API', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body.message).toBe('Product deleted successfully');
     });
+
+    
+    test('DELETE /products/:id - should return 404 for non-existent product', async () => {
+        const nonExistentId = '60d5f484f1c2b8b8c8e4e4e4';
+        const response = await request(app).delete(`/products/${nonExistentId}`);
+        expect(response.statusCode).toBe(404);
+        expect(response.body.message).toBe('Product not found');
+    });
 });
