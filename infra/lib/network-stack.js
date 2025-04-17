@@ -7,7 +7,7 @@ export class NetworkStack extends cdk.Stack {
     
     // Create the VPC with public subnets only
     this.vpc = new ec2.Vpc(this, 'AtelierVPC', {
-      cidr: '10.0.0.0/16',
+      ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
       maxAzs: 3,
       subnetConfiguration: [
         {
@@ -21,6 +21,7 @@ export class NetworkStack extends cdk.Stack {
     
     // Tag the VPC
     cdk.Tags.of(this.vpc).add('Name', 'AtelierVPC');
+    cdk.Tags.of(this.vpc).add('Realm', 'Networking');
     
     // Export VPC and subnet IDs needed by other stacks
     new cdk.CfnOutput(this, 'VPCId', {
