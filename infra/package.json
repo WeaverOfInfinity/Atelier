@@ -2,7 +2,7 @@
   "name": "infra",
   "version": "0.1.0",
   "bin": {
-    "infra": "bin/infra.js"
+    "atelier": "bin/atelier.js"
   },
   "scripts": {
     "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
