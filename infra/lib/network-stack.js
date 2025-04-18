@@ -104,12 +104,12 @@ export class NetworkStack extends cdk.Stack {
       exportName: 'AtelierFrontendAsgSGId',
     });
 
-    new cdk.CfnOutput(this, 'BackendALBSGId', {
+    new cdk.CfnOutput(this, 'BackendAlbSGId', {
       value: this.backendAlbSG.securityGroupId,
       exportName: 'AtelierBackendAlbSGId',
     });
 
-    new cdk.CfnOutput(this, 'BackendASGSGId', {
+    new cdk.CfnOutput(this, 'BackendAsgSGId', {
       value: this.backendAsgSG.securityGroupId,
       exportName: 'AtelierBackendAsgSGId',
     });
