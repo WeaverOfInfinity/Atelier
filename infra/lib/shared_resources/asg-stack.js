@@ -45,9 +45,6 @@ export class BaseAsgStack extends Stack {
       cooldown: Duration.seconds(300),
       vpcSubnets: { subnets },
       maxInstanceLifetime: Duration.days(30),
-      healthCheck: autoscaling.HealthChecks.elb({
-        grace: Duration.seconds(300),
-      }),
     });
 
     this.autoScalingGroup.attachToApplicationTargetGroup(targetGroup);
