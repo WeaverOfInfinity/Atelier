@@ -1,0 +1,7 @@
+services:
+  api:
+    build: .
+    container_name: express-api
+    ports:
+      - "80:5000"
+    restart: unless-stopped
