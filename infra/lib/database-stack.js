@@ -18,6 +18,10 @@ export class DatabaseStack extends cdk.Stack {
         { attributeName: 'GSI_ORDER_DATE', attributeType: 'S' },
         { attributeName: 'created_at', attributeType: 'S' },
       ],
+      timeToLiveSpecification: {
+        attributeName: 'ttl',
+        enabled: true
+      },
       keySchema: [
         { attributeName: 'PK', keyType: 'HASH' },
         { attributeName: 'SK', keyType: 'RANGE' },
