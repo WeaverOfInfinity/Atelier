@@ -58,40 +58,24 @@ export class BaseAsgStack extends Stack {
       cooldown: Duration.seconds(300),
     });
 
-    // Scale based on memory utilization
-    this.autoScalingGroup.scaleOnMetric('MemoryUtilizationScaling', {
-        metric: new cloudwatch.Metric({
-          namespace: 'CWAgent',
-          metricName: 'mem_used_percent',
-          dimensionsMap: {
-            InstanceId: this.autoScalingGroup.autoScalingGroupName,
-          },
-        }),
-        scalingSteps: [
-          { upper: 75, change: +1 }, // Add an instance if memory exceeds 75%
-          { lower: 50, change: -1 }, // Remove an instance if memory drops below 50%
-        ],
-        adjustmentType: autoscaling.AdjustmentType.CHANGE_IN_CAPACITY,
-      });
-
-      // Scale based on network traffic
-      this.autoScalingGroup.scaleOnMetric('NetworkInScaling', {
-        metric: this.autoScalingGroup.metricNetworkIn(),
-        scalingSteps: [
-          { upper: 2000000000, change: +1 }, // Add an instance if inbound traffic exceeds 2 Gbps
-          { lower: 1000000000, change: -1 }, // Remove an instance if inbound traffic drops below 1 Gbps
-        ],
-        adjustmentType: autoscaling.AdjustmentType.CHANGE_IN_CAPACITY,
-      });
-      
-      this.autoScalingGroup.scaleOnMetric('NetworkOutScaling', {
-        metric: this.autoScalingGroup.metricNetworkOut(),
-        scalingSteps: [
-          { upper: 2000000000, change: +1 }, // Add an instance if outbound traffic exceeds 2 Gbps
-          { lower: 1000000000, change: -1 }, // Remove an instance if outbound traffic drops below 1 Gbps
-        ],
-        adjustmentType: autoscaling.AdjustmentType.CHANGE_IN_CAPACITY,
-      });
+    // Scale based on network traffic
+    this.autoScalingGroup.scaleOnMetric('NetworkInScaling', {
+    metric: this.autoScalingGroup.metricNetworkIn(),
+    scalingSteps: [
+        { upper: 2000000000, change: +1 }, // Add an instance if inbound traffic exceeds 2 Gbps
+        { lower: 1000000000, change: -1 }, // Remove an instance if inbound traffic drops below 1 Gbps
+    ],
+    adjustmentType: autoscaling.AdjustmentType.CHANGE_IN_CAPACITY,
+    });
+    
+    this.autoScalingGroup.scaleOnMetric('NetworkOutScaling', {
+    metric: this.autoScalingGroup.metricNetworkOut(),
+    scalingSteps: [
+        { upper: 2000000000, change: +1 }, // Add an instance if outbound traffic exceeds 2 Gbps
+        { lower: 1000000000, change: -1 }, // Remove an instance if outbound traffic drops below 1 Gbps
+    ],
+    adjustmentType: autoscaling.AdjustmentType.CHANGE_IN_CAPACITY,
+    });
 
 
     new CfnOutput(this, 'AutoScalingGroupName', {
