@@ -45,7 +45,9 @@ export class BackendStack extends cdk.Stack {
 
             # Clone application repository (replace with your actual repository URL)
             git clone https://github.com/WeaverOfInfinity/Atelier.git
-            cd Atelier/api
+            cd Atelier
+            git checkout release/v1
+            cd api
 
             # Build and start application with Docker
             docker-compose up -d
