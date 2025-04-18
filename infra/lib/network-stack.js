@@ -94,9 +94,24 @@ export class NetworkStack extends cdk.Stack {
     });
 
     // Export SG IDs for other stacks
-    new cdk.CfnOutput(this, 'FrontendALBSGId', {
+    new cdk.CfnOutput(this, 'FrontendAlbSGId', {
       value: this.frontendAlbSG.securityGroupId,
-      exportName: 'FrontendALBSGId',
+      exportName: 'AtelierFrontendAlbSGId',
+    });
+
+    new cdk.CfnOutput(this, 'FrontendAsgSGId', {
+      value: this.frontendAsgSG.securityGroupId,
+      exportName: 'AtelierFrontendAsgSGId',
+    });
+
+    new cdk.CfnOutput(this, 'BackendALBSGId', {
+      value: this.backendAlbSG.securityGroupId,
+      exportName: 'AtelierBackendAlbSGId',
+    });
+
+    new cdk.CfnOutput(this, 'BackendASGSGId', {
+      value: this.backendAsgSG.securityGroupId,
+      exportName: 'AtelierBackendAsgSGId',
     });
   }
 }
