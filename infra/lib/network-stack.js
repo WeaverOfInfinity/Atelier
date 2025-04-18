@@ -57,7 +57,6 @@ export class NetworkStack extends cdk.Stack {
     this.frontendAsgSG.connections.allowFrom(this.frontendAlbSG, ec2.Port.tcp(3000), 'Allow from ALB');
 
     // Frontend ASG → Backend ALB
-    this.frontendAsgSG.connections.allowTo(this.backendAlbSG, ec2.Port.tcp(5000), 'Frontend ASG to Backend ALB');
     this.backendAlbSG.connections.allowFrom(this.frontendAsgSG, ec2.Port.tcp(5000), 'Allow from Frontend ASG');
 
     // Backend ALB → Backend ASG
