@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
-import { BaseAlbStack } from './shared_resources/alb-stack';
-import { BaseAsgStack } from './shared_resources/asg-stack';
+import { BaseAlbStack } from './shared_resources/alb-stack.js';
+import { BaseAsgStack } from './shared_resources/asg-stack.js';
 
 export class BackendStack extends cdk.Stack {
     constructor(scope, id, props) {
