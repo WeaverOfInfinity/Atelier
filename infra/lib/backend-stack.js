@@ -7,11 +7,39 @@ export class BackendStack extends cdk.Stack {
     constructor(scope, id, props) {
         super(scope, id, props);
 
+        const backendAlbSG = ec2.SecurityGroup.fromSecurityGroupId(
+            this,
+            'ImportedBackendAlbSG',
+            cdk.Fn.importValue('AtelierBackendAlbSGId') // Use the export name from NetworkStack
+        );
+
+        const backendAsgSG = ec2.SecurityGroup.fromSecurityGroupId(
+            this,
+            'ImportedBackendAsgSG',
+            cdk.Fn.importValue('AtelierBackendAsgSGId') // Use the export name from NetworkStack
+        );
+
+        const publicSubnets = [
+            ec2.Subnet.fromSubnetId(this, 'PublicSubnetA', cdk.Fn.importValue('AtelierPublicSubnetAId')),
+            ec2.Subnet.fromSubnetId(this, 'PublicSubnetB', cdk.Fn.importValue('AtelierPublicSubnetBId')),
+            ec2.Subnet.fromSubnetId(this, 'PublicSubnetC', cdk.Fn.importValue('AtelierPublicSubnetCId')),
+          ];
+
+        const vpc = ec2.Vpc.fromVpcAttributes(this, 'ImportedVpc', {
+            vpcId: cdk.Fn.importValue('AtelierVpcId'), // Use the export name from NetworkStack
+            availabilityZones: cdk.Stack.of(this).availabilityZones,
+            publicSubnetIds: [
+                cdk.Fn.importValue('AtelierPublicSubnetAId'),
+                cdk.Fn.importValue('AtelierPublicSubnetBId'),
+                cdk.Fn.importValue('AtelierPublicSubnetCId'),
+            ],
+        });
+
         const backendAlb = new BaseAlbStack(this, 'BackendAlb', {
             appRole: 'Backend',
-            vpc: props.networkStack.vpc,
-            publicSubnets: props.networkStack.vpc.publicSubnets,
-            securityGroup: props.networkStack.backendAlbSG,
+            vpc: vpc,
+            publicSubnets: publicSubnets,
+            securityGroup: backendAlbSG,
             listenerPorts: [80],
             healthCheckPath: '/',
             healthCheckPort: 80,
@@ -58,9 +86,9 @@ export class BackendStack extends cdk.Stack {
 
         const backendAsg = new BaseAsgStack(this, 'BackendAsg', {
             appRole: 'Backend',
-            vpc: props.networkStack.vpc,
-            subnets: props.networkStack.vpc.publicSubnets,
-            securityGroup: props.networkStack.backendAsgSG,
+            vpc: vpc,
+            subnets: publicSubnets,
+            securityGroup: backendAsgSG,
             targetGroup: backendAlb.targetGroup,
             userData: userData,
         });

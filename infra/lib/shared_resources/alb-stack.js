@@ -1,5 +1,6 @@
 import { Stack, CfnOutput } from 'aws-cdk-lib';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { Duration } from 'aws-cdk-lib';
 
 export class BaseAlbStack extends Stack {
   constructor(scope, id, props) {
@@ -9,10 +10,10 @@ export class BaseAlbStack extends Stack {
     const {
       appRole,
       vpc,
-      publicSubnets,
+      publicSubnets, // array of public subnets for ALB
       securityGroup,
-      listenerPorts,
-      healthCheckPath,
+      listenerPorts, // array of ports for listeners
+      healthCheckPath, // http path for health check
       healthCheckPort,
     } = props;
 
@@ -33,8 +34,8 @@ export class BaseAlbStack extends Stack {
       targetType: elbv2.TargetType.INSTANCE,
       healthCheck: {
         path: healthCheckPath,
-        timeout: 5,
-        interval: 30,
+        interval: Duration.seconds(30), // Set a valid Duration object
+        timeout: Duration.seconds(5),
         healthyThresholdCount: 2,
         unhealthyThresholdCount: 2,
         port: healthCheckPort.toString()
