@@ -52,49 +52,31 @@ export class BackendStack extends cdk.Stack {
       appRole,
     });
     
+
+    const userDataScript = ec2.UserData.forLinux();
+    userDataScript.addCommands(
+        'sudo dnf update -y',
+        'sudo dnf install -y git docker',
+        'sudo systemctl start docker',
+        'sudo systemctl enable docker',
+        'sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+-o /usr/local/bin/docker-compose',
+        'sudo chmod +x /usr/local/bin/docker-compose',
+        'sudo mkdir -p /app',
+        'cd /app',
+        'sudo git clone https://github.com/WeaverOfInfinity/Atelier.git',
+        'cd Atelier',
+        'sudo git checkout release/v1',
+        'cd api',
+        'sudo docker-compose up -d'
+    );
+
     // Create ASG construct
     new AsgConstruct(this, 'BackendAsg', {
       vpc,
       subnets,
       securityGroup: asgSecurityGroup,
-      userData: `
-        #!/bin/bash
-        set -e
-        
-        # Log all output to a file
-        exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-        
-        # Update system packages
-        dnf update -y
-        
-        # Install Git, Docker, and AWS CLI
-        dnf install -y git docker
-        
-        # Start and enable Docker service
-        systemctl start docker
-        systemctl enable docker
-        
-        # Install docker-compose
-        curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
-        -o /usr/local/bin/docker-compose
-        chmod +x /usr/local/bin/docker-compose
-        
-        # Create application directory
-        mkdir -p /app
-        cd /app
-        
-        # Clone application repository
-        git clone https://github.com/WeaverOfInfinity/Atelier.git
-        cd Atelier
-        git checkout release/v1
-        cd api
-        
-        # Build and start application with Docker
-        docker-compose up -d
-        
-        # Log success message
-        echo "User data script completed successfully" >> /var/log/user-data.log
-      `,
+      userData: userDataScript,
       appRole,
       targetGroup: alb.targetGroup,
     });

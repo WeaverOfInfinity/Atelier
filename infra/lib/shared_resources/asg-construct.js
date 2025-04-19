@@ -24,7 +24,7 @@ export class AsgConstruct extends Construct {
       }),
       instanceType: new ec2.InstanceType("t3.micro"),
       securityGroup: securityGroup,
-      userData: userData ? ec2.UserData.custom(userData) : undefined,
+      userData: userData,
       blockDevices: [{
         deviceName: '/dev/xvda',
         volume: ec2.BlockDeviceVolume.ebs(8, {
