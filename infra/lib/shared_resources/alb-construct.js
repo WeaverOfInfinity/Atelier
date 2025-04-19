@@ -18,7 +18,7 @@ export class AlbConstruct extends Construct {
     } = props;
     
     // Create ALB
-    this.loadBalancer = new elbv2.ApplicationLoadBalancer(this, `${appRole}-alb`, {
+    this.loadBalancer = new elbv2.ApplicationLoadBalancer(this, `${appRole}Alb`, {
       vpc,
       internetFacing: true,
       securityGroup,
@@ -27,11 +27,12 @@ export class AlbConstruct extends Construct {
     });
     
     // Create target group
-    this.targetGroup = new elbv2.ApplicationTargetGroup(this, `${appRole}-tg`, {
+    this.targetGroup = new elbv2.ApplicationTargetGroup(this, `${appRole}Tg`, {
       vpc,
       port: healthCheckPort,
       protocol: elbv2.ApplicationProtocol.HTTP,
       targetType: elbv2.TargetType.INSTANCE,
+      targetGroupName: `${appRole}-tg`,
       healthCheck: {
         path: healthCheckPath,
         interval: Duration.seconds(30),
@@ -46,7 +47,7 @@ export class AlbConstruct extends Construct {
     this.listeners = [];
     listenerPorts.forEach(port => {
       const listener = this.loadBalancer.addListener(
-        `${appRole}-listener-${port}`, 
+        `${appRole}Listener${port}`, 
         {
           port,
           open: true,

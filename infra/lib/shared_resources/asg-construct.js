@@ -18,7 +18,8 @@ export class AsgConstruct extends Construct {
     } = props;
     
     // Create launch template
-    const launchTemplate = new ec2.LaunchTemplate(this, `${appRole}-launch-template`, {
+    const launchTemplate = new ec2.LaunchTemplate(this, `${appRole}LaunchTemplate`, {
+      launchTemplateName: `${appRole}-launch-template`,
       machineImage: ec2.MachineImage.genericLinux({
         'af-south-1': "ami-0df82cf3ebb3eab9d",
       }),
@@ -36,7 +37,8 @@ export class AsgConstruct extends Construct {
     });
     
     // Create Auto Scaling Group
-    this.autoScalingGroup = new autoscaling.AutoScalingGroup(this, `${appRole}-asg`, {
+    this.autoScalingGroup = new autoscaling.AutoScalingGroup(this, `${appRole}Asg`, {
+      autoScalingGroupName: `${appRole}-asg`,
       vpc,
       mixedInstancesPolicy: {
         launchTemplate: launchTemplate,
@@ -52,7 +54,7 @@ export class AsgConstruct extends Construct {
     this.autoScalingGroup.attachToApplicationTargetGroup(targetGroup);
     
     // Scale based on CPU utilization
-    this.autoScalingGroup.scaleOnCpuUtilization(`${appRole}-cpu-scaling`, {
+    this.autoScalingGroup.scaleOnCpuUtilization(`${appRole}CpuScaling`, {
       targetUtilizationPercent: 55,
       cooldown: Duration.seconds(300),
     });

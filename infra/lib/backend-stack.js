@@ -53,7 +53,10 @@ export class BackendStack extends cdk.Stack {
     });
     
 
+    // When using ec2.Userdata.forLinux(), you don't need to specify #!/bin/bash
+    // as it is automatically added by the CDK.
     const userDataScript = ec2.UserData.forLinux();
+    // Always use addCommands() otherwise the script will not work (for some reason).
     userDataScript.addCommands(
         'sudo dnf update -y',
         'sudo dnf install -y git docker',
